@@ -1,0 +1,9 @@
+# Common Node.js and React ignores
+node_modules/
+.cache/
+build/
+dist/
+.env
+.vscode/
+npm-debug.log*
+yarn-debug.log*
