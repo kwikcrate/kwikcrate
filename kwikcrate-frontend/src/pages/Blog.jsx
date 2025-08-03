@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// ✅ Corrected for React (Create React App)
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 const Blog = () => {
