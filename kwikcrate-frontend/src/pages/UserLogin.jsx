@@ -9,6 +9,9 @@ const UserLogin = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_BASE_URL;
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -17,10 +20,7 @@ const UserLogin = () => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', {
-        email,
-        password,
-      });
+      const res = await axios.post(`${apiUrl}/users/login`, { email, password });
       localStorage.setItem('userToken', res.data.token);
       navigate('/');
     } catch (err) {
@@ -30,10 +30,9 @@ const UserLogin = () => {
 
   const handleGoogleLogin = async (credentialResponse) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/google-login', {
+      const res = await axios.post(`${apiUrl}/users/google-login`, {
         credential: credentialResponse.credential,
       });
-
       localStorage.setItem('userToken', res.data.token);
       navigate('/');
     } catch (err) {
@@ -41,8 +40,6 @@ const UserLogin = () => {
       setError('Google login failed');
     }
   };
-
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
