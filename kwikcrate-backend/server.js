@@ -1,46 +1,57 @@
+// Load Environment Variables
+import dotenv from 'dotenv';
+dotenv.config();
+
 // Required Modules
 import express from 'express';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
 // Route Imports
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import pageRoutes from './routes/pageRoutes.js'; // ✅ Pages API added
+import pageRoutes from './routes/pageRoutes.js';
 
-// Environment Setup
-dotenv.config();
+// Check Environment Variables
+const MONGO_URI = process.env.MONGO_URI;
+const PORT = process.env.PORT || 5000;
 
-if (!process.env.MONGO_URI) {
+if (!MONGO_URI) {
   console.error("❌ MONGO_URI is not defined in .env");
   process.exit(1);
 }
 
+// Initialize App
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors()); // You can customize: cors({ origin: "http://localhost:3000" })
 app.use(express.json());
+
+// Root Endpoint for Testing
+app.get('/', (req, res) => {
+  res.send("🚀 Kwikcrate API is running...");
+});
 
 // API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/pages', pageRoutes); // ✅ Pages route registered
+app.use('/api/pages', pageRoutes);
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
-  process.exit(1);
-});
+.then(() => {
+  console.log('✅ MongoDB connected');
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  // Start Server after successful DB connection
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  });
+})
+.catch((err) => {
+  console.error('❌ MongoDB connection error:', err.message);
+  process.exit(1);
 });

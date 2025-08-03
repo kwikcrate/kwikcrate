@@ -6,16 +6,16 @@ import axios from 'axios';
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/login', {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/admin/login`,
+        { username, password }
+      );
       localStorage.setItem('adminToken', res.data.token);
       localStorage.setItem('isAdmin', 'true');
       navigate('/admin/dashboard');

@@ -1,9 +1,8 @@
-// src/admin/pages/ManagePage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
+const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const ManagePage = () => {
   const { slug } = useParams();
@@ -23,10 +22,11 @@ const ManagePage = () => {
         setMessage("Page loaded.");
       } catch (err) {
         console.warn(`Page not found for slug "${slug}", starting fresh.`);
-        setTitle(slug
+        const formattedTitle = slug
           .split("-")
-          .map((word) => word[0].toUpperCase() + word.slice(1))
-          .join(" "));
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        setTitle(formattedTitle);
         setContent("");
         setMessage("No existing content, you can create a new one.");
       } finally {
@@ -45,11 +45,7 @@ const ManagePage = () => {
 
     setSaving(true);
     try {
-      await axios.post(`${API_BASE}/api/pages`, {
-        title,
-        slug,
-        content,
-      });
+      await axios.post(`${API_BASE}/api/pages`, { title, slug, content });
       setMessage("✅ Page saved successfully!");
     } catch (err) {
       console.error("Save failed:", err);

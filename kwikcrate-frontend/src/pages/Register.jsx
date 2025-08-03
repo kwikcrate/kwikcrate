@@ -15,7 +15,10 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/users/register', formData);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/users/register`,
+        formData
+      );
       if (res.data.token) {
         localStorage.setItem('userToken', res.data.token);
         navigate('/');
@@ -27,7 +30,10 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-800 text-white">
-      <form onSubmit={handleRegister} className="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-sm">
+      <form
+        onSubmit={handleRegister}
+        className="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-sm"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
 

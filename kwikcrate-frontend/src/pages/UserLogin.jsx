@@ -6,10 +6,16 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 const UserLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      setError('Please fill in both fields');
+      return;
+    }
+
     try {
       const res = await axios.post('http://localhost:5000/api/users/login', {
         email,
@@ -17,8 +23,8 @@ const UserLogin = () => {
       });
       localStorage.setItem('userToken', res.data.token);
       navigate('/');
-    } catch {
-      alert('Login failed');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
@@ -32,11 +38,11 @@ const UserLogin = () => {
       navigate('/');
     } catch (err) {
       console.error('Google login error:', err);
-      alert('Google login failed');
+      setError('Google login failed');
     }
   };
 
-  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
@@ -46,6 +52,9 @@ const UserLogin = () => {
           className="bg-gray-900 p-8 rounded-lg shadow-md w-full max-w-sm mb-6"
         >
           <h2 className="text-2xl font-bold mb-6 text-center">User Login</h2>
+
+          {error && <div className="text-red-500 text-sm mb-4 text-center">{error}</div>}
+
           <input
             type="email"
             placeholder="Email"
@@ -60,12 +69,17 @@ const UserLogin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="bg-green-600 hover:bg-green-700 w-full py-2 rounded">Login</button>
+          <button
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 w-full py-2 rounded"
+          >
+            Login
+          </button>
         </form>
 
         <div className="bg-gray-900 p-6 rounded-lg shadow-md w-full max-w-sm text-center">
-          <p className="mb-4 text-sm">or</p>
-          <GoogleLogin onSuccess={handleGoogleLogin} onError={() => alert('Google login failed')} />
+          <p className="mb-4 text-sm">Or login with</p>
+          <GoogleLogin onSuccess={handleGoogleLogin} onError={() => setError('Google login failed')} />
         </div>
       </div>
     </GoogleOAuthProvider>
