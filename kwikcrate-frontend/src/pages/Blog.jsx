@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
+// ✅ Corrected for React (Create React App)
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -20,7 +21,11 @@ const Blog = () => {
   };
 
   const handleCreate = async () => {
-    if (!title || !content) return setError("Title and content are required.");
+    if (!title || !content) {
+      setError("Title and content are required.");
+      return;
+    }
+
     try {
       await axios.post(`${API_BASE}/api/blogs`, { title, content });
       setTitle("");
