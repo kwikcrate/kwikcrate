@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/user.js';
 import Game from '../models/Game.js';
 import Topup from '../models/Topup.js';
 
