@@ -1,6 +1,6 @@
 import User from '../models/user.js';
 import Game from '../models/Game.js';
-import Topup from '../models/Topup.js';
+import Topup from '../models/TopUp.js';
 
 export const getAdminStats = async (req, res) => {
   try {
